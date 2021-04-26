@@ -28,9 +28,10 @@ Usage: $0 [COMMAND] [OPTIONS]...
 An Amatuer Radio Logbook written in bash
 
 Commands
-    help    view this help text
-    view    view the logbook
-    new     create new logbook entry
+    help           view this help text
+    view           view the logbook
+    new            create new logbook entry
+    interactive    shows the logbook then reqeusts new input (repeatedly)
 
 Options
     -h --help           view this help text
@@ -127,6 +128,15 @@ function new {
 
 }
 
+function interactive {
+  logbook="$1"
+  dateformat="$2"
+  clear
+  view "$logbook" "$dateformat"
+  new "$logbook" "$dateformat"
+  interactive "$logbook" "$dateformat"
+}
+
 # =Argument Parsing=
 # based on SO answer https://stackoverflow.com/a/14203146
 
@@ -185,6 +195,9 @@ case "$CMD" in
     ;;
   "new")
     new "$LOGBOOK" "$DATEFORMAT"
+    ;;
+  "interactive")
+    interactive "$LOGBOOK" "$DATEFORMAT"
     ;;
   *)
     echo "Error: Invalid command '$CMD'"
