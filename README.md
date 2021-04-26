@@ -1,6 +1,6 @@
 # hamlog.sh
 
-An Amatuer Radio logbook written in bash
+An Amateur Radio logbook written in bash
 
 ## About
 
@@ -21,7 +21,7 @@ consitant set of options that can be passed to any command (see
 $ hamlog.sh help
 Usage: ./hamlog.sh [COMMAND] [OPTIONS]...
 
-An Amatuer Radio Logbook written in bash
+An Amateur Radio Logbook written in bash
 
 Commands
     help           view this help text

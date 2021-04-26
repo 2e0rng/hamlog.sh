@@ -25,7 +25,7 @@ function usage {
   cat << EOF
 Usage: $0 [COMMAND] [OPTIONS]...
 
-An Amatuer Radio Logbook written in bash
+An Amateur Radio Logbook written in bash
 
 Commands
     help           view this help text
