@@ -28,10 +28,12 @@ Usage: $0 [COMMAND] [OPTIONS]...
 An Amatuer Radio Logbook written in bash
 
 Commands
+    help    view this help text
     view    view the logbook
     new     create new logbook entry
 
 Options
+    -h --help           view this help text
     -d --date-format    output date format (passed to 'date')
     -l --logbook        logbook file
 EOF
