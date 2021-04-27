@@ -21,6 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+BANDS_DATA_URL="http://www.hamqsl.com/solarxml.php"
+
 function usage {
   cat << EOF
 Usage: $0 [COMMAND] [OPTIONS]...
@@ -139,6 +141,40 @@ function interactive {
   interactive "$logbook" "$dateformat"
 }
 
+function conditions {
+	# this function collects data from http://www.hamqsl.com/solar.html which is
+	# maintained by Paul L Herrman (N0NBH)
+
+	# only 1 request should ever be made to this BANDS_DATA_URL per hour this
+  # is to be respectful to N0NBH's server.
+
+  bands_data_file="$1"
+  bands_data_url="$2"
+
+	if test -f "$bands_data_file"; then
+		last_updated="$(grep updated "$bands_data_file"  | sed -r 's/^\s+<updated> (.+)<\/updated>/\1/')"
+		last_updated_unix=$(date -d "$last_updated" +%s)
+		now_unix=$(date +%s)
+
+		if [ $((now_unix - last_updated_unix)) -gt 3600 ]; then
+			# been 1hr, so update
+			curl -s "$bands_data_url" > "$bands_data_file"
+		fi
+	else
+		# file does not exist, so fetch inital version
+		curl -s "$bands_data_url" > "$bands_data_file"
+	fi
+
+	grep band "$bands_data_file" \
+		| sed -r 's/\s+<band name="([0-9]+m-[0-9]+m)" time="(\w+)">(\w+)<\/band>/\1 \2 \3/' \
+		| pr -ts" " --columns 2 \
+		| awk '{ print $1,$3,$6 }' \
+		| column -t --table-columns BAND,DAY,NIGHT \
+		| sed -r "/(Good)/s//$(printf '\033[32m\\1\033[0m')/g" \
+		| sed -r "/(Fair)/s//$(printf '\033[36m\\1\033[0m')/g" \
+		| sed -r "/(Poor)/s//$(printf '\033[31m\\1\033[0m')/g"
+}
+
 # =Argument Parsing=
 # based on SO answer https://stackoverflow.com/a/14203146
 
@@ -174,6 +210,9 @@ CMD=${POSITIONAL[0]}
 if [ -z "$HAMLOG_HOME" ]; then
   HAMLOG_HOME="$HOME/.hamlog"
 fi
+
+BANDS_DATA_FILE="$HAMLOG_HOME/solardata.xml"
+
 mkdir -p "$HAMLOG_HOME"
 
 if [ -z "$DATEFORMAT" ]; then
@@ -200,6 +239,9 @@ case "$CMD" in
     ;;
   "interactive")
     interactive "$LOGBOOK" "$DATEFORMAT"
+    ;;
+  "conditions")
+    conditions "$BANDS_DATA_FILE" "$BANDS_DATA_URL"
     ;;
   *)
     echo "Error: Invalid command '$CMD'"
