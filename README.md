@@ -28,9 +28,16 @@ Commands
     view           view the logbook
     new            create new logbook entry
     interactive    shows the logbook then reqeusts new input (repeatedly)
+    conditions     show current band conditions (from
+                   http://www.hamqsl.com/solarxml.php)
 
 Options
     -h --help           view this help text
     -d --date-format    output date format (passed to 'date')
     -l --logbook        logbook file
 ```
+## Conditions
+
+The bands conditions feature uses the API from
+[hamqsl](https://www.hamqsl.com/solar.html). Check out
+[hamqsl.com](https://www.hamqsl.com) for more information.

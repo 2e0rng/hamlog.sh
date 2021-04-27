@@ -32,6 +32,8 @@ Commands
     view           view the logbook
     new            create new logbook entry
     interactive    shows the logbook then reqeusts new input (repeatedly)
+    conditions     show current band conditions (from
+                   http://www.hamqsl.com/solarxml.php)
 
 Options
     -h --help           view this help text
