@@ -44,6 +44,12 @@ Options
 EOF
 }
 
+function prepend {
+  header="$1"
+  echo "$header"
+  cat
+}
+
 function view {
   logbook="$1"
   dateformat="$2"
@@ -56,9 +62,8 @@ function view {
     | awk -F ',' \
         -v dateformat=$dateformat \
         '{system("date -d \"@"$1"\" +"dateformat"  | tr \"\n\" \",\"")} {OFS=","; print $2,$3,$4,$5,$6,$7,$8,$9}' \
-    | column -t \
-        -s ',' \
-        -N 'DATE,FREQUENCY (MHz),MODE,POWER,CALL SIGN,QTH,RST RX,RST TX,NOTES'
+    | prepend 'DATE,FREQUENCY (MHz),MODE,POWER,CALL SIGN,QTH,RST RX,RST TX,NOTES' \
+    | column -t -s ','
 }
 
 function new {
@@ -106,9 +111,8 @@ function new {
     | awk -F ',' \
         -v dateformat=$dateformat \
         '{system("date -d \"@"$1"\" +"dateformat"  | tr \"\n\" \",\"")} {OFS=","; print $2,$3,$4,$5,$6,$7,$8,$9}' \
-    | column -t \
-        -s ',' \
-        -N 'DATE,FREQUENCY (MHz),MODE,POWER,CALL SIGN,QTH,RST RX,RST TX,NOTES'
+    | prepend 'DATE,FREQUENCY (MHz),MODE,POWER,CALL SIGN,QTH,RST RX,RST TX,NOTES' \
+    | column -t -s ','
   else
     lastqth=""
   fi
@@ -169,7 +173,8 @@ function conditions {
 		| sed -r 's/\s+<band name="([0-9]+m-[0-9]+m)" time="(\w+)">(\w+)<\/band>/\1 \2 \3/' \
 		| pr -ts" " --columns 2 \
 		| awk '{ print $1,$3,$6 }' \
-		| column -t --table-columns BAND,DAY,NIGHT \
+    | prepend "BAND DAY NIGHT" \
+		| column -t \
 		| sed -r "/(Good)/s//$(printf '\033[32m\\1\033[0m')/g" \
 		| sed -r "/(Fair)/s//$(printf '\033[36m\\1\033[0m')/g" \
 		| sed -r "/(Poor)/s//$(printf '\033[31m\\1\033[0m')/g"
