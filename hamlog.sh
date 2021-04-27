@@ -136,15 +136,6 @@ function new {
 
 }
 
-function interactive {
-  logbook="$1"
-  dateformat="$2"
-  clear
-  view "$logbook" "$dateformat"
-  new "$logbook" "$dateformat"
-  interactive "$logbook" "$dateformat"
-}
-
 function conditions {
 	# this function collects data from http://www.hamqsl.com/solar.html which is
 	# maintained by Paul L Herrman (N0NBH)
@@ -178,6 +169,18 @@ function conditions {
 		| sed -r "/(Good)/s//$(printf '\033[32m\\1\033[0m')/g" \
 		| sed -r "/(Fair)/s//$(printf '\033[36m\\1\033[0m')/g" \
 		| sed -r "/(Poor)/s//$(printf '\033[31m\\1\033[0m')/g"
+}
+
+function interactive {
+  logbook="$1"
+  dateformat="$2"
+  bands_data_file="$3"
+  bands_data_url="$4"
+  clear
+  conditions "$bands_data_file" "$bands_data_url"
+  view "$logbook" "$dateformat"
+  new "$logbook" "$dateformat"
+  interactive "$logbook" "$dateformat"
 }
 
 # =Argument Parsing=
@@ -243,7 +246,7 @@ case "$CMD" in
     new "$LOGBOOK" "$DATEFORMAT"
     ;;
   "interactive")
-    interactive "$LOGBOOK" "$DATEFORMAT"
+    interactive "$LOGBOOK" "$DATEFORMAT" "$BANDS_DATA_FILE" "$BANDS_DATA_URL"
     ;;
   "conditions")
     conditions "$BANDS_DATA_FILE" "$BANDS_DATA_URL"
