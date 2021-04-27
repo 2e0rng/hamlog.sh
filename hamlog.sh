@@ -178,7 +178,9 @@ function interactive {
   bands_data_url="$4"
   clear
   conditions "$bands_data_file" "$bands_data_url"
+  echo
   view "$logbook" "$dateformat"
+  echo
   new "$logbook" "$dateformat"
   interactive "$logbook" "$dateformat"
 }
